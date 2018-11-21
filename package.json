@@ -1,0 +1,41 @@
+{
+  "name": "dat-rm",
+  "version": "1.0.0",
+  "description": "Delete files from dat archives using glob patterns",
+  "main": "index.js",
+  "dependencies": {
+    "callbox": "^1.0.0",
+    "dat-glob": "^1.0.0",
+    "flush-write-stream": "^1.0.3",
+    "is-glob": "^4.0.0"
+  },
+  "devDependencies": {
+    "@rangermauve/webrun": "^3.0.2",
+    "standard": "^12.0.1",
+    "tape": "^4.9.1"
+  },
+  "scripts": {
+    "test": "standard && webrun --allow-require test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brechtcs/dat-rm.git"
+  },
+  "keywords": [
+    "prune",
+    "delete",
+    "remove",
+    "del",
+    "rm",
+    "rimraf",
+    "dat",
+    "hyperdrive",
+    "scoped-fs"
+  ],
+  "bugs": {
+    "url": "https://github.com/brechtcs/dat-rm/issues"
+  },
+  "homepage": "https://github.com/brechtcs/dat-rm#readme",
+  "author": "Brecht Savelkoul <brecht.savelkoul@gmail.com>",
+  "license": "Apache-2.0"
+}
