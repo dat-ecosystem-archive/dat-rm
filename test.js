@@ -8,9 +8,11 @@ test('dir', async t => {
   await dat.mkdir('subdir')
   await dat.writeFile('subdir/file.txt', '')
 
-  await rm(dat, 'subdir')
-  t.notOk(await exists(dat, 'subdir'))
-  t.end()
+  rm(dat, 'subdir', async err => {
+    t.notOk(err)
+    t.notOk(await exists(dat, 'subdir'))
+    t.end()
+  })
 })
 
 test('glob', async t => {

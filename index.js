@@ -7,19 +7,21 @@ var pump = require('pump')
 
 module.exports = remove
 
-async function remove (dat, pattern, opts) {
+async function remove (dat, pattern, opts, cb) {
+  if (typeof opts === 'function') {
+    cb = opts
+    opts = {}
+  }
   opts = opts || {}
 
   if (!isGlob(pattern)) {
     var stats = await stat(dat, pattern)
     if (stats.isDirectory()) {
-      return remove(dat, join(pattern, '**/*'), { prune: true })
-    } else {
-      return unlink(dat, pattern)
+      return remove(dat, join(pattern, '**/*'), { prune: true }, cb)
     }
   }
 
-  return box(done => {
+  function rmGlob (done) {
     var stream = glob(dat, pattern)
     var rm = flush(async function (file, enc, next) {
       await unlink(dat, file)
@@ -34,7 +36,9 @@ async function remove (dat, pattern, opts) {
     })
 
     pump(stream, rm, done)
-  })
+  }
+
+  return cb ? rmGlob(cb) : box(rmGlob)
 }
 
 function stat (dat, path) {
