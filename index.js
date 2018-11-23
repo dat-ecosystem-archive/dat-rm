@@ -14,7 +14,7 @@ async function remove (dat, pattern, opts, cb) {
   }
   opts = opts || {}
 
-  if (!isGlob(pattern)) {
+  if (!Array.isArray(pattern) && !isGlob(pattern)) {
     var stats = await stat(dat, pattern)
     if (stats.isDirectory()) {
       return remove(dat, join(pattern, '**/*'), { prune: true }, cb)

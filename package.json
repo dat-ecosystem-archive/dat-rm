@@ -1,11 +1,11 @@
 {
   "name": "dat-rm",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Delete files from dat archives using glob patterns",
   "main": "index.js",
   "dependencies": {
     "callbox": "^1.0.0",
-    "dat-glob": "^1.0.0",
+    "dat-glob": "^1.1.0",
     "flush-write-stream": "^1.0.3",
     "is-glob": "^4.0.0"
   },

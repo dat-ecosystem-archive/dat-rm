@@ -3,7 +3,7 @@
 var rm = require('./')
 var test = require('./node_modules/tape')
 
-test('dir', async t => {
+test('directory', async t => {
   var dat = await DatArchive.create()
   await dat.mkdir('subdir')
   await dat.writeFile('subdir/file.txt', '')
@@ -32,6 +32,18 @@ test('glob', async t => {
   for await (var file of files) {
     t.notOk(await exists(dat, file), file)
   }
+  t.end()
+})
+
+test('array', async t => {
+  var dat = await DatArchive.create()
+  await dat.writeFile('ping.txt', '')
+  await dat.writeFile('pong.md', '')
+
+  await rm(dat, ['*.txt', '*.md'])
+  t.notOk(await exists(dat, 'ping.txt'))
+  t.notOk(await exists(dat, 'pong.md'))
+  t.ok(await exists(dat, 'dat.json'))
   t.end()
 
   window.close()
