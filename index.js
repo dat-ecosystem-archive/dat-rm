@@ -16,7 +16,7 @@ async function remove (dat, pattern, opts, cb) {
 
   if (!Array.isArray(pattern) && !isGlob(pattern)) {
     var stats = await stat(dat, pattern)
-    if (stats.isDirectory()) {
+    if (stats && stats.isDirectory()) {
       return remove(dat, join(pattern, '**/*'), { prune: true }, cb)
     }
   }
@@ -24,7 +24,7 @@ async function remove (dat, pattern, opts, cb) {
   function rmGlob (done) {
     var stream = glob(dat, pattern)
     var rm = flush(async function (file, enc, next) {
-      await unlink(dat, file)
+      await unlink(dat, file.toString())
       if (opts.prune) {
         try {
           await rmdir(dat, dirname(file.toString()))
@@ -41,12 +41,19 @@ async function remove (dat, pattern, opts, cb) {
   return cb ? rmGlob(cb) : box(rmGlob)
 }
 
-function stat (dat, path) {
+async function stat (dat, path) {
+  var stats = null
   var lstat = dat.lstat ? dat.lstat.bind(dat) : dat.stat.bind(dat)
-  if (lstat.constructor.name === 'AsyncFunction') {
-    return lstat(path)
-  }
-  return box(done => lstat(path, done))
+
+  try {
+    if (lstat.constructor.name === 'AsyncFunction') {
+      stats = await lstat(path)
+    } else {
+      stats = await box(done => lstat(path, done))
+    }
+  } catch (err) {}
+
+  return stats
 }
 
 function rmdir (dat, path) {

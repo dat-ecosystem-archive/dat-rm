@@ -7,6 +7,7 @@ test('directory', async t => {
   var dat = await DatArchive.create()
   await dat.mkdir('subdir')
   await dat.writeFile('subdir/file.txt', '')
+  await rm(dat, 'nonexistent')
 
   rm(dat, 'subdir', async err => {
     t.notOk(err)
