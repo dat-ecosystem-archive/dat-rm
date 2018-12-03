@@ -5,13 +5,15 @@ var test = require('./node_modules/tape')
 
 test('directory', async t => {
   var dat = await DatArchive.create()
-  await dat.mkdir('subdir')
-  await dat.writeFile('subdir/file.txt', '')
+  await dat.mkdir('sub')
+  await dat.mkdir('sub/subsub')
+  await dat.writeFile('sub/subsub/file.txt', '')
   await rm(dat, 'nonexistent')
 
-  rm(dat, 'subdir', async err => {
+  rm(dat, 'sub', async err => {
     t.notOk(err)
-    t.notOk(await exists(dat, 'subdir'))
+    t.notOk(await exists(dat, 'sub/sub'))
+    t.notOk(await exists(dat, 'sub'))
     t.end()
   })
 })
