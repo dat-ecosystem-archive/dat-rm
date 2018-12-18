@@ -5,9 +5,9 @@ var glob = require('dat-glob/stream')
 var isGlob = require('is-glob')
 var pump = require('pump')
 
-module.exports = remove
+module.exports = rm
 
-async function remove (dat, pattern, opts, cb) {
+async function rm (dat, pattern, opts, cb) {
   if (typeof opts === 'function') {
     cb = opts
     opts = {}
@@ -17,23 +17,23 @@ async function remove (dat, pattern, opts, cb) {
   if (!Array.isArray(pattern) && !isGlob(pattern)) {
     var stats = await stat(dat, pattern)
     if (stats && stats.isDirectory()) {
-      return remove(dat, join(pattern, '**/*'), { prune: true }, cb)
+      return rm(dat, join(pattern, '**/*'), { prune: true }, cb)
     }
   }
 
-  function rmGlob (done) {
+  function remove (done) {
     var stream = glob(dat, pattern)
-    var rm = flush(async function (file, enc, next) {
+    var end = flush(async function (file, enc, next) {
       var path = file.toString()
       await unlink(dat, path)
       if (opts.prune) await prune(dat, path)
       next()
     })
 
-    pump(stream, rm, done)
+    pump(stream, end, done)
   }
 
-  return cb ? rmGlob(cb) : box(rmGlob)
+  return cb ? remove(cb) : box(remove)
 }
 
 async function prune (dat, path) {
